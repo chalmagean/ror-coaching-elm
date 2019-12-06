@@ -1,20 +1,24 @@
 module Main exposing (..)
 
 import Browser
-import Html exposing (Html, text, div, h1, img)
-import Html.Attributes exposing (src)
+import Html exposing (Html, button, div, h1, input, text)
+import Html.Attributes exposing (type_)
+import Html.Events exposing (onClick, onInput)
+
 
 
 ---- MODEL ----
 
 
 type alias Model =
-    {}
+    { title : String
+    , counter : Int
+    }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( {}, Cmd.none )
+    ( { title = "Welcome", counter = 0 }, Cmd.none )
 
 
 
@@ -22,12 +26,18 @@ init =
 
 
 type Msg
-    = NoOp
+    = UpdateModel String
+    | IncrementCounter
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    ( model, Cmd.none )
+    case msg of
+        IncrementCounter ->
+            ( { model | counter = model.counter + 1 }, Cmd.none )
+
+        UpdateModel str ->
+            ( { model | title = str }, Cmd.none )
 
 
 
@@ -37,8 +47,10 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div []
-        [ img [ src "/logo.svg" ] []
-        , h1 [] [ text "Your Elm App is working!" ]
+        [ h1 [] [ text model.title ]
+        , input [ type_ "text", onInput UpdateModel ] []
+        , div [] [ text (String.fromInt model.counter) ]
+        , button [ onClick IncrementCounter ] [ text "ADD" ]
         ]
 
 
